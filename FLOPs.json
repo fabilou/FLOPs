@@ -1,0 +1,10 @@
+{
+    "path": "$FLOPS",
+    "enable": "true",
+    "env":
+    [
+        {
+            "FLOPS": "C:/Users/fabilou/Dropbox/03_Apps/Houdini/addons/FLOPs"
+        }
+    ]
+}
