@@ -8,27 +8,12 @@ def updateNodeColor(node, event_type, **kwargs):
 	if parmTuple is not None:
 		c = hou.Color((0.8, 0.8, 0.8))
 
-		r = node.parm("Color_RGB_A_VALUEr").eval()
-		g = node.parm("Color_RGB_A_VALUEg").eval()
-		b = node.parm("Color_RGB_A_VALUEb").eval()
+		r, g, b = flops.getColorParm(node, "Color_RGB_A_VALUE")
 
-		t = flops.__colorTempToRGB(node.parm("Emission_BlackBody_temperature").eval())
+		tr, tg, tb = flops.getColorTempParm(node, "Emission_BlackBody_temperature")
 
-		if any(parmTuple.name() == x for x in ["Color_RGB_A_VALUE", "Emission_BlackBody_temperature"]):
-			if node.parm("UI_Emission_Type").eval() == 1:
-				c.setRGB((r * t[0], g * t[1], b * t[2]))
-			
-			else:
-				c.setRGB((r, g, b))
-
-			try:
-				node.setColor(c)
-
-			except:
-				pass
-
-		elif parmTuple.name() == "light_enabled":
-			if parmTuple.eval()[0] == 0:
+		if any(parmTuple.name() == x for x in ["Color_RGB_A_VALUE", "Emission_BlackBody_temperature", "light_enabled"]):
+			if node.parm("light_enabled").eval() == 0:
 				c.setRGB((0.1, 0.1, 0.1))
 
 				try:
@@ -41,7 +26,7 @@ def updateNodeColor(node, event_type, **kwargs):
 
 			else:
 				if node.parm("UI_Emission_Type").eval() == 1:
-						c.setRGB((r * t[0], g * t[1], b * t[2]))
+						c.setRGB((r * tr, g * tg, b * tb))
 			
 				else:
 					c.setRGB((r, g, b))

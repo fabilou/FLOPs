@@ -6,34 +6,10 @@ def updateNodeColor(node, event_type, **kwargs):
 	parmTuple = kwargs["parm_tuple"]
 
 	if parmTuple is not None:
-		c = hou.Color((0.8, 0.8, 0.8))
+		c = hou.Color()
 
-		if any(parmTuple.name() == x for x in ["blackbody_efficiency_color_A_VALUE", "emission_efficiency_color_A_VALUE", "NT_EMIS_BLACKBODY1_temperature","switch"]):
-			
-			if node.parm("switch").eval() == 0:
-				r = node.parm("blackbody_efficiency_color_A_VALUEr").eval()
-				g = node.parm("blackbody_efficiency_color_A_VALUEg").eval()
-				b = node.parm("blackbody_efficiency_color_A_VALUEb").eval()
-
-				t = flops.__colorTempToRGB(node.parm("NT_EMIS_BLACKBODY1_temperature").eval())
-
-				c.setRGB((r * t[0], g * t[1], b * t[2]))
-
-			else:
-				r = node.parm("emission_efficiency_color_A_VALUEr").eval()
-				g = node.parm("emission_efficiency_color_A_VALUEg").eval()
-				b = node.parm("emission_efficiency_color_A_VALUEb").eval()
-				
-				c.setRGB((r, g, b))
-
-			try:
-				node.setColor(c)
-
-			except:
-				pass
-
-		elif parmTuple.name() == "light_enabled":
-			if parmTuple.eval()[0] == 0:
+		if any(parmTuple.name() == x for x in ["blackbody_efficiency_color_A_VALUE", "emission_efficiency_color_A_VALUE", "light_enabled", "NT_EMIS_BLACKBODY1_temperature","switch"]):
+			if node.parm("light_enabled").eval() == 0:
 				c.setRGB((0.1, 0.1, 0.1))
 
 				try:
@@ -43,24 +19,17 @@ def updateNodeColor(node, event_type, **kwargs):
 
 				except:
 					pass
-
 			else:
+
 				if node.parm("switch").eval() == 0:
-					r = node.parm("blackbody_efficiency_color_A_VALUEr").eval()
-					g = node.parm("blackbody_efficiency_color_A_VALUEg").eval()
-					b = node.parm("blackbody_efficiency_color_A_VALUEb").eval()
-
-					t = flops.__colorTempToRGB(node.parm("NT_EMIS_BLACKBODY1_temperature").eval())
-
-					c.setRGB((r * t[0], g * t[1], b * t[2]))
+					r, g, b = flops.getColorParm(node, "blackbody_efficiency_color_A_VALUE")
+					tr, tg, tb = flops.getColorTempParm(node, "NT_EMIS_BLACKBODY1_temperature")
+					c.setRGB((r * tr, g * tg, b * tb))
 
 				else:
-					r = node.parm("emission_efficiency_color_A_VALUEr").eval()
-					g = node.parm("emission_efficiency_color_A_VALUEg").eval()
-					b = node.parm("emission_efficiency_color_A_VALUEb").eval()
-					
+					r, g, b = flops.getColorParm(node, "emission_efficiency_color_A_VALUE")
 					c.setRGB((r, g, b))
-				
+
 				try:
 					node.setColor(c)
 					node.setComment("")

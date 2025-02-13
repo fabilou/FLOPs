@@ -1,5 +1,6 @@
 import hou
 import traceback
+import FLOPs_Utils as flops
 
 def updateNodeColor(node, event_type, **kwargs):
 	parmTuple = kwargs["parm_tuple"]
@@ -7,21 +8,10 @@ def updateNodeColor(node, event_type, **kwargs):
 	if parmTuple is not None:
 		c = hou.Color()
 
-		r = node.parm("PhysicalSky1_sun_tintr").eval()
-		g = node.parm("PhysicalSky1_sun_tintg").eval()
-		b = node.parm("PhysicalSky1_sun_tintb").eval()
+		r, g, b = flops.getColorParm(node, "PhysicalSky1_sun_tint")
 
-		if parmTuple.name() == "PhysicalSky1_sun_tint":
-			c.setRGB((r, g, b))
-
-			try:
-				node.setColor(c)
-
-			except:
-				pass
-
-		elif parmTuple.name() == "light_enabled":
-			if parmTuple.eval()[0] == 0:
+		if any(parmTuple.name() == x for x in ["light_enabled", "PhysicalSky1_sun_tint"]):
+			if node.parm("light_enabled").eval() == 0:
 				c.setRGB((0.1, 0.1, 0.1))
 
 				try:

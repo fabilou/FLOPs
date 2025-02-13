@@ -31,4 +31,16 @@ def __colorTempToRGB(temperature):
 		b = 138.5177312231 * math.log(b) - 305.0447927307
 		b = max(0, min(1, b / 255))
 	
-	return (r, g, b)
+	return r, g, b
+
+def getColorParm(node, colorParmName):
+	r = node.parm(colorParmName + "r").eval()
+	g = node.parm(colorParmName + "g").eval()
+	b = node.parm(colorParmName + "b").eval()
+
+	return r, g, b
+
+def getColorTempParm(node, colorTempParmName):
+	r, g, b = __colorTempToRGB(node.parm(colorTempParmName).eval())
+
+	return r, g, b
