@@ -1,5 +1,6 @@
 import hou
 import traceback
+import FLOPs_Utils as flops
 
 def updateNodeColor(node, event_type, **kwargs):
 	parmTuple = kwargs["parm_tuple"]
@@ -8,9 +9,7 @@ def updateNodeColor(node, event_type, **kwargs):
 	
 		c = hou.Color()
 
-		r = node.parm("colorr").eval()
-		g = node.parm("colorg").eval()
-		b = node.parm("colorb").eval()
+		r, g, b = flops.getColorParm(node, "color")
 		
 		if any(parmTuple.name() == x for x in ["color", "colortype"]):
 			if node.parm("colortype").eval() == 0:
